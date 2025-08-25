@@ -44,7 +44,7 @@ shadow_enabled = true
 visible = false
 
 [node name="PlayerSpawner" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("uid://t8p4xa8p0pby", "")
+_spawnable_scenes = PackedStringArray("uid://t8p4xa8p0pby", "uid://bqwerty123456")
 spawn_path = NodePath("../Players")
 
 [node name="EnemySpawner" type="MultiplayerSpawner" parent="."]

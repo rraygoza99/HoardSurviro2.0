@@ -167,12 +167,12 @@ func begin_game():
 	assert(multiplayer.is_server())
 	
 	#call load_world on all clients
-	load_world_3d.rpc()
+	load_world.rpc()
 	
 	#grab the world node and player scene
-	var world : Node3D = get_tree().get_root().get_node("World3D")
-	var player_scene := load("res://player3d.tscn")
-
+	var world : Node2D = get_tree().get_root().get_node("World")
+	var player_scene := load("res://new_player.tscn")
+	
 	#Iterate over our connected peer ids
 	var spawn_index = 0
 	
@@ -205,32 +205,42 @@ func begin_game_3d():
 	#call load_world_3d on all clients
 	load_world_3d.rpc()
 	
+	#Wait for world to load on all clients
+	await get_tree().create_timer(1.0).timeout
+	
 	#grab the world node and player scene
 	var world : Node3D = get_tree().get_root().get_node("World3D")
 	var player_scene := load("res://new_player3d.tscn")
 	
-	#Iterate over our connected peer ids
+	#Iterate over connected peer ids in a deterministic order
 	var spawn_index = 0
-	
-	for peer_id in players:
+	var peer_ids := players.keys()
+	peer_ids.sort()
+
+	for peer_id in peer_ids:
 		print("PEER ID: ", peer_id)
 		var player : CharacterBody3D = player_scene.instantiate()
-		
 		player.set_player_name(players[peer_id])
-		# "true" forces a readable name, which is important, as we can't have sibling nodes
-		# with the same name.
-		world.get_node("Players").add_child(player, true)
-		
-		#Set the authorization for the player. This has to be called on all peers to stay in sync.
-		player.set_authority.rpc(peer_id)
-		
-		#Grab our location for the player.
+
+		#Get spawn position and set initial transform BEFORE adding to tree so spawn state replicates
 		var spawn_points = world.get_node("SpawnPoints")
 		if spawn_points.get_child_count() > spawn_index:
 			var target : Vector3 = spawn_points.get_child(spawn_index).position
-			#The peer has authority over the player's position, so to sync it properly,
-			#we need to set that position from that peer with an RPC.
-			player.teleport.rpc_id(peer_id, target)
+			player.global_position = target
+
+		# Set a deterministic name so the node path matches on all peers
+		player.name = str(peer_id)
+
+		# Add to Players container
+		world.get_node("Players").add_child(player, true)
+
+		# Give one frame so MultiplayerSpawner can replicate the node to clients
+		await get_tree().process_frame
+
+		# Set the authorization for the player. This has to be called on all peers to stay in sync.
+		# Delayed until after replication to avoid node-path RPC race on clients.
+		print("Setting authority for ", player.name, " path ", player.get_path(), " -> ", peer_id)
+		player.set_authority.rpc(peer_id)
 		
 		spawn_index += 1
 	
