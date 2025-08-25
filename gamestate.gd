@@ -73,6 +73,7 @@ func _ready():
 			var id = Steam.getLobbyOwner(new_lobby_id)
 			if id != Steam.getSteamID():
 				connect_steam_socket(id)
+				await multiplayer.connected_to_server
 				register_player.rpc(player_name)
 				players[multiplayer.get_unique_id()] = player_name
 		else:
@@ -206,7 +207,7 @@ func begin_game_3d():
 	
 	#grab the world node and player scene
 	var world : Node3D = get_tree().get_root().get_node("World3D")
-	var player_scene := load("res://player3d.tscn")
+	var player_scene := load("res://new_player3d.tscn")
 	
 	#Iterate over our connected peer ids
 	var spawn_index = 0
@@ -233,10 +234,7 @@ func begin_game_3d():
 		
 		spawn_index += 1
 	
-	# Start the survivor game
-	var survivor_manager = get_node_or_null("/root/SurvivorGameManager")
-	if survivor_manager:
-		survivor_manager.start_3d_game()
+	print("3D Game started successfully!")
 	
 # create_steam_socket and connect_steam_socket both create the multiplayer peer, instead
 # of _ready, for the sake of compatibility with other networking services

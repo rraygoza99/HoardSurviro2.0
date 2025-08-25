@@ -1,6 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://bim1dorpw8tym"]
-
-[ext_resource type="PackedScene" path="res://game_hud.tscn" id="1_hud"]
+[gd_scene load_steps=3 format=3 uid="uid://bim1dorpw8tym"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_1"]
 size = Vector3(50, 1, 50)
@@ -43,8 +41,4 @@ shadow_enabled = true
 [node name="Collectibles" type="Node3D" parent="."]
 
 [node name="Environment" type="Node3D" parent="."]
-
-[node name="GameHUD" parent="." instance=ExtResource("1_hud")]
 visible = false
-grow_horizontal = 2
-grow_vertical = 2

@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://t8p4xa8p0pby"]
+[gd_scene load_steps=5 format=3 uid="uid://t8p4xa8p0pby"]
 
 [ext_resource type="Script" uid="uid://cmbri0y5d4q0f" path="res://Scripts/player3d.gd" id="1_abc123"]
 
@@ -10,6 +10,26 @@ height = 1.8
 radius = 0.4
 height = 1.8
 
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_1"]
+properties/0/path = NodePath(".:synced_position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:synced_rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath(".:health")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+properties/3/path = NodePath(".:level")
+properties/3/spawn = true
+properties/3/replication_mode = 1
+properties/4/path = NodePath(".:stunned")
+properties/4/spawn = true
+properties/4/replication_mode = 1
+properties/5/path = NodePath(".:player_name")
+properties/5/spawn = true
+properties/5/replication_mode = 1
+
 [node name="Player3D" type="CharacterBody3D"]
 script = ExtResource("1_abc123")
 
@@ -20,7 +40,7 @@ mesh = SubResource("CapsuleMesh_1")
 shape = SubResource("CapsuleShape3D_1")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.525531, 0.850775, 0, -0.850775, 0.525531, 0, 4.62762, 2.04864)
+transform = Transform3D(1, 0, 0, 0, 0.782793, 0.622283, 0, -0.622283, 0.782793, 0, 5.02536, 5.03867)
 
 [node name="NameLabel" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)
@@ -37,3 +57,6 @@ value = 100.0
 [node name="InvincibilityTimer" type="Timer" parent="."]
 wait_time = 1.5
 one_shot = true
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_1")
