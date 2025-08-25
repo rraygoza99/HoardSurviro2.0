@@ -42,3 +42,11 @@ shadow_enabled = true
 
 [node name="Environment" type="Node3D" parent="."]
 visible = false
+
+[node name="PlayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("uid://t8p4xa8p0pby", "")
+spawn_path = NodePath("../Players")
+
+[node name="EnemySpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("uid://bxy08aadef123")
+spawn_path = NodePath("../Enemies")
